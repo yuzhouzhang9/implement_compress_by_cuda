@@ -2,7 +2,7 @@
 
 // Destructor: destroys the Huffman tree
 HuffmanTree::~HuffmanTree() {
-    delete_tree(root);
+    // delete_tree(root);
 }
 
 // Build Huffman tree using frequency table

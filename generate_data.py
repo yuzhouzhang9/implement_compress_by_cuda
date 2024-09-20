@@ -1,25 +1,29 @@
-import os 
+import os
 import numpy as np
 from multiprocessing import Pool
 
-# Generate a 16-float random number
+# Generate a set of random float16 numbers
 def generator_data(i):
-    sz = 10 * 2**30 // 2#10G
+    sz = 10 * 2**20 // 2  # 10GB in bytes, float16 takes 2 bytes each, so the number of elements is 10MB / 2
     data_float16 = []
-    if i % 2 :
-        # normal distribution
-        data_float16 = np.float16(np.random.rand(sz))
+    
+    if i % 2:
+        # Normal distribution
+        data_float16 = np.float16(np.random.randn(sz))  # Use randn to generate normally distributed data
     else:
-        # uniform distribution
-        data_float16 = np.float16(np.random.uniform(np.finfo(np.float16).min, np.finfo(np.float16).max,sz))
-    with open(f'data/data_{i}.npy', 'wb') as f:
+        # Uniform distribution
+        data_float16 = np.float16(np.random.uniform(np.finfo(np.float16).min, 
+                                                    np.finfo(np.float16).max, sz))
+         
+    
+    # Save data as a binary file
+    with open(f'data/data{i}.bin', 'wb') as f:
         f.write(data_float16.tobytes())
+        print(f"generated data{i}.bin successfully")
 
 if __name__ == "__main__":
-    # creat new dir
-    if not os.path.exists('data'):
-        os.mkdir('data')
-    
-    # 
+    # Create the data directory if it doesn't exist
+    os.makedirs('data', exist_ok=True)
+    # Use multiprocessing to generate data in parallel
     with Pool(processes=10) as pool:
-        pool.map(generator_data,range(10))
+        pool.map(generator_data, range(10))

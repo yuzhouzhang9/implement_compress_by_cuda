@@ -71,7 +71,7 @@ std::map<uint16_t, double> CustomCompressor::calculate_probabilities(const std::
 std::map<uint16_t, std::vector<bool>> CustomCompressor::get_huffman_encoding(const std::map<uint16_t, double> probabilities) const {
 
     // Build Huffman tree
-    HuffmanTree huffmanTree;
+    HuffmanTree huffmanTree = HuffmanTree();// Create Huffman tree object
     huffmanTree.build_tree(probabilities);
 
     // Implement Huffman encoding logic

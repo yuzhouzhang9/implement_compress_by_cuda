@@ -7,8 +7,10 @@ set(CMAKE_CXX_STANDARD 14)
 set(SOURCES
     src/cpp_compression/cpp_compression.cpp
     src/cpp_compression/cpp_huffman_tree.cpp
+    src/cpp_compression/cpp_lz77.cpp
     test/test_cpp_compress.cpp
 )
+
 
 # 添加头文件目录
 include_directories(src/cpp_compression)

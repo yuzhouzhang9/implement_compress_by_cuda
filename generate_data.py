@@ -4,7 +4,7 @@ from multiprocessing import Pool
 
 # Generate a set of random float16 numbers
 def generator_data(i):
-    sz = 10 * 2**20 // 2  # 10GB in bytes, float16 takes 2 bytes each, so the number of elements is 10MB / 2
+    sz = 1 * 2**20 // 2  # 100M in bytes, float16 takes 2 bytes each, so the number of elements is 100MB / 2
     data_float16 = []
     
     if i % 2:

@@ -1,9 +1,9 @@
 #include "cpp_compression.h"
-#include "cpp_huffman_tree.h"
 #include <algorithm>
 #include <bits/stdint-uintn.h>
 #include <stdexcept>
 #include <queue>
+#include <iostream>
 #include <vector>
 using namespace std;
 CustomCompressor::CustomCompressor() : compressionLevel(5) {}
@@ -108,6 +108,19 @@ std::vector<uint8_t> CustomCompressor::quant_data(const std::vector<uint8_t>& da
 
 std::string CustomCompressor::get_name() const {
     return "CustomCompressor";
+}
+
+std::vector<uint16_t> CustomCompressor::decompress_with_lz77(const std::vector<uint8_t>& data) {
+    Lz77Compressor lz77 =  Lz77Compressor();
+    vector<uint16_t> decompressed_data = lz77.decompress(data);
+    return decompressed_data;
+}
+
+std::vector<uint8_t> CustomCompressor::compress_with_lz77(const std::vector<uint16_t>& data) {
+    std::cout<<"start compressing with lz77"<<std::endl;
+    Lz77Compressor lz77 =  Lz77Compressor();
+    vector<uint8_t> compressed_data = lz77.compress(data);
+    return compressed_data;
 }
 
 void CustomCompressor::set_compression_level(int level) {

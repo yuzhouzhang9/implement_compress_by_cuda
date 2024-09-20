@@ -37,6 +37,9 @@ std::vector<uint16_t> read_binary_file(const std::string& filename) {
     return buffer;
 }
 
+
+
+
 void process_data(int file_index, std::vector<uint16_t>& data) {
     if (data.empty()) {
         std::cout <<"file_index"<<file_index<<"No data available (file may not exist or failed to read)" << std::endl;
@@ -56,6 +59,7 @@ void process_data(int file_index, std::vector<uint16_t>& data) {
         huffman_encoding_method_story.push_back(pair);
     }
     
+
     // Create binary file names
     std::string compressed_file_name = "../data/compressed_data_" + std::to_string(file_index) + ".bin";
     std::string encoding_file_name = "../data/huffman_encoding_" + std::to_string(file_index) + ".bin";
@@ -112,6 +116,38 @@ void process_data(int file_index, std::vector<uint16_t>& data) {
     std::cout << std::endl;
 }
 
+void write_to_file_uint8(const std::string& filename, const std::vector<uint8_t>& data) {
+    std::ofstream compressed_file(filename, std::ios::binary);
+    if (compressed_file.is_open()) {
+        // Write the size of the original data
+        uint32_t original_size = static_cast<uint32_t>(data.size());
+        compressed_file.write(reinterpret_cast<const char*>(&original_size), sizeof(original_size));
+
+        // Write the data directly, as it's already in uint8_t format
+        compressed_file.write(reinterpret_cast<const char*>(data.data()), data.size());
+
+        compressed_file.close();
+        std::cout << "Data written to " << filename << std::endl;
+    } else {
+        std::cerr << "Unable to open file " << filename << " for writing data." << std::endl;
+    }
+}
+
+void process_data_in_lz77(int file_index,const std::vector<uint16_t>& data) {
+    if (data.empty()) {
+        std::cout <<"file_index"<<file_index<<"No data available (file may not exist or failed to read)" << std::endl;
+        return;
+    } 
+    std::cout << "file_index"<<file_index<<"Processing data..." << std::endl;
+    CustomCompressor cc = CustomCompressor();
+    std::vector<uint8_t> compressed_data = cc.compress_with_lz77(data);
+    std::cout << "Compressed file " << file_index << ":" << std::endl;
+    std::cout << "Compressed size : " << compressed_data.size() << " bytes with lz77" << std::endl;
+    // Create binary file names
+    std::string compressed_file_name = "../data/compressed_data_in_lz77" + std::to_string(file_index) + ".bin";
+    write_to_file_uint8(compressed_file_name,compressed_data);
+}
+
 int main() {
     std::vector<std::future<std::vector<uint16_t>>> read_futures;
     std::vector<std::future<void>> process_futures;
@@ -128,10 +164,12 @@ int main() {
     }
 
     // Start data processing tasks
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 1; ++i) {
         process_futures.push_back(std::async(std::launch::async, [i, &read_futures]() {
             std::vector<uint16_t> data = read_futures[i].get();
-            process_data(i, data);
+            // process_data(i, data);
+            std::cout<<"Processing file_index "<<i<<std::endl;
+            process_data_in_lz77(i,data);
         }));
     }
 

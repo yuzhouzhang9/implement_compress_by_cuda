@@ -1,6 +1,7 @@
 #ifndef CUSTOM_COMPRESSOR_H
 #define CUSTOM_COMPRESSOR_H
-
+#include "cpp_huffman_tree.h"
+#include "cpp_lz77.h"
 #include <bits/stdint-uintn.h>
 #include <vector>
 #include <string>
@@ -36,7 +37,11 @@ public:
     // decompres with huffman
     std::vector<uint16_t>decompress_with_huffman(const std::vector<bool>& data,const std::map<std::uint16_t,std::vector<bool>>& endcoding);
 
-    // 设置压缩级别
+    std::vector<uint8_t> compress_with_lz77(const std::vector<uint16_t>& data);
+
+    std::vector<uint16_t> decompress_with_lz77(const std::vector<uint8_t>& compressedData);
+
+    // set compression level
     void set_compression_level(int level);
 
 private:
